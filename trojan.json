@@ -5,7 +5,7 @@
   "remote_addr": "caddy",
   "remote_port": 80,
   "log_level": 3,
-  "password": ["fd140a846272"],
+  "password": ["PASSWORD HERE"],
   "ssl": {
     "cert": "/etc/data/speedtest/host.crt",
     "key": "/etc/data/speedtest/host.key",

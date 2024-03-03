@@ -54,12 +54,12 @@ services:
 
   caddy:
     image: caddy:2.7-alpine
-    command: caddy file-server --listen :80
+    command: caddy file-server
     networks: [web]
     depends_on:
       - traefik
     healthcheck:
-      test: nc -zv localhost:2019 || exit -1
+      test: nc -zv localhost:80 || exit -1
       interval: 3s
       timeout: 3s
       start_period: 10s
@@ -67,16 +67,14 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.cad.entrypoints=webs
-      - traefik.http.routers.cad.rule=Host(`bps.co.ir`)
+      - traefik.http.routers.cad.rule=Host(`domain.com`)
       - traefik.http.routers.cad.tls=true
       - traefik.http.routers.cad.tls.certresolver=le
-      - traefik.http.routers.cad.service=cad
       - traefik.http.services.cad.loadbalancer.server.port=80
     volumes:
       - ~/site:/srv
 
   trojan:
-    #build: ../builder
     image: teddysun/trojan-go:latest
     networks: [web]
     depends_on:
@@ -85,7 +83,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.tcp.routers.tgo.entrypoints=webs
-      - traefik.tcp.routers.tgo.rule=HostSNI(`my.bps.co.ir`)
+      - traefik.tcp.routers.tgo.rule=HostSNI(`my.domain.com`)
       - traefik.tcp.routers.tgo.tls=true
       - traefik.tcp.routers.tgo.tls.passthrough=true
       - traefik.tcp.routers.tgo.tls.certresolver=le
