@@ -1,0 +1,115 @@
+version: '3.9'
+
+services:
+  traefik:
+    image: traefik:v2.10.4
+    ports:
+      - target: 80
+        published: 80
+        mode: host
+      - target: 443
+        published: 443
+        mode: host
+    networks: [web]
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=web
+    command:
+      - --api       # Enable the Dashboard and API
+      - --api.dashboard
+      - --accesslog # Enable the access log, with HTTP requests
+      - --log       # Enable the Traefik log, for configurations and errors
+      #- --log.level=DEBUG
+      - --providers.docker
+      - --providers.docker.exposedByDefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.webs.address=:443
+      - --entrypoints.web.http.redirections.entrypoint.to=webs
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      # Create the certificate resolver "le" for Let's Encrypt, uses the environment variable EMAIL
+      - --certificatesresolvers.le.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/certificates/acme.json
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+      #- --certificatesresolvers.le.acme.tlschallenge=true
+      - --global.sendAnonymousUsage=false
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ~/letsencrypt:/certificates
+    restart: unless-stopped
+
+  certsdump:
+    image: ldez/traefik-certs-dumper:v2.8.1
+    depends_on:
+      - traefik
+    entrypoint: sh -c 'apk add jq;
+      while ! [ -e /data/acme.json ] || ! [ `jq ".[] | .Certificates | length" /data/acme.json` != 0 ];
+      do
+      sleep 5;
+      done &&
+      traefik-certs-dumper file --version v2 --domain-subdir --clean=false --watch --source ./acme.json --dest .'
+    volumes:
+      - ~/letsencrypt:/data
+    working_dir: /data
+
+  caddy:
+    image: caddy:2.7-alpine
+    command: caddy file-server --listen :80
+    networks: [web]
+    depends_on:
+      - traefik
+    healthcheck:
+      test: nc -zv localhost:2019 || exit -1
+      interval: 3s
+      timeout: 3s
+      start_period: 10s
+      retries: 5      
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.cad.entrypoints=webs
+      - traefik.http.routers.cad.rule=Host(`bps.co.ir`)
+      - traefik.http.routers.cad.tls=true
+      - traefik.http.routers.cad.tls.certresolver=le
+      - traefik.http.routers.cad.service=cad
+      - traefik.http.services.cad.loadbalancer.server.port=80
+    volumes:
+      - ~/site:/srv
+
+  trojan:
+    #build: ../builder
+    image: teddysun/trojan-go:latest
+    networks: [web]
+    depends_on:
+      caddy:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.tcp.routers.tgo.entrypoints=webs
+      - traefik.tcp.routers.tgo.rule=HostSNI(`my.bps.co.ir`)
+      - traefik.tcp.routers.tgo.tls=true
+      - traefik.tcp.routers.tgo.tls.passthrough=true
+      - traefik.tcp.routers.tgo.tls.certresolver=le
+      - traefik.tcp.services.tgo.loadbalancer.server.port=443
+    volumes:
+      - ~/trojan-go.json:/etc/trojan-go/config.json
+      - ~/letsencrypt:/etc/data
+
+  speedtest:
+    image: teddysun/trojan:1.16.0
+    networks: [web]
+    depends_on:
+      caddy:
+        condition: service_healthy
+    labels:
+      - traefik.enable=true
+      - traefik.tcp.routers.spd.entrypoints=webs
+      - traefik.tcp.routers.spd.rule=HostSNI(`www.speedtest.net`)
+      - traefik.tcp.routers.spd.tls=true
+      - traefik.tcp.routers.spd.tls.passthrough=true
+      - traefik.tcp.services.spd.loadbalancer.server.port=443
+    volumes:
+      - ~/trojan.json:/etc/trojan/config.json
+      - ~/letsencrypt:/etc/data
+
+networks:
+  web:

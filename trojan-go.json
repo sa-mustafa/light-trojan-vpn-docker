@@ -1,0 +1,34 @@
+{
+  "run_type": "server",
+  "local_addr": "0.0.0.0",
+  "local_port": 443,
+  "remote_addr": "caddy",
+  "remote_port": 80,
+  "password": ["360774a1c6fa"],
+  "log_level": 1,
+  "ssl": {
+    "cert": "/etc/data/my.bps.co.ir/certificate.crt",
+    "key": "/etc/data/my.bps.co.ir/privatekey.key",
+    "sni": "api.bps.co.ir",
+    "alpn": ["http/1.1", "h2"],
+    "verify": false,
+    "verify_hostname": false,
+    "fallback_addr": "caddy",
+    "fallback_port": 80
+  },
+  "tcp": {
+    "no_delay": true,
+    "keep_alive": true,
+    "prefer_ipv4": false
+  },
+  "mux": {
+    "enabled": false,
+    "concurrency": 8,
+    "idle_timeout": 60
+  },
+  "websocket": {
+    "enabled": true,
+    "path": "/wst",
+    "host": ""
+  }
+}
