@@ -67,7 +67,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.http.routers.cad.entrypoints=webs
-      - traefik.http.routers.cad.rule=Host(`domain.com`)
+      - traefik.http.routers.cad.rule=Host(`api.bps.co.ir`)
       - traefik.http.routers.cad.tls=true
       - traefik.http.routers.cad.tls.certresolver=le
       - traefik.http.services.cad.loadbalancer.server.port=80
@@ -83,7 +83,7 @@ services:
     labels:
       - traefik.enable=true
       - traefik.tcp.routers.tgo.entrypoints=webs
-      - traefik.tcp.routers.tgo.rule=HostSNI(`my.domain.com`)
+      - traefik.tcp.routers.tgo.rule=HostSNI(`my.bps.co.ir`)
       - traefik.tcp.routers.tgo.tls=true
       - traefik.tcp.routers.tgo.tls.passthrough=true
       - traefik.tcp.routers.tgo.tls.certresolver=le
