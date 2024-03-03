@@ -50,7 +50,7 @@ export ACME_EMAIL=help@domain.com
 and run the script as follows:
 
 ```shell
-docker-compose up -d
+docker compose up -d
 ```
 
 -d is for detached mode where the console is detached from the docker command. You can run without it to see the output from all services and debug the whole process. If the domain names are correctly pointing to your VPS, the traefik service will produce the SSL certificates automatically and the services are ready to use it. You may need to run the script multiple times initially, because the SSL files are not generated immediately and some services such as trojan depend on them to work properly.
