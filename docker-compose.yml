@@ -35,7 +35,7 @@ services:
       - --global.sendAnonymousUsage=false
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ~/letsencrypt:/certificates
+      - ./letsencrypt:/certificates
     restart: unless-stopped
 
   certsdump:
@@ -49,7 +49,7 @@ services:
       done &&
       traefik-certs-dumper file --version v2 --domain-subdir --clean=false --watch --source ./acme.json --dest .'
     volumes:
-      - ~/letsencrypt:/data
+      - ./letsencrypt:/data
     working_dir: /data
 
   caddy:
@@ -72,7 +72,8 @@ services:
       - traefik.http.routers.cad.tls.certresolver=le
       - traefik.http.services.cad.loadbalancer.server.port=80
     volumes:
-      - ~/site:/srv
+      - ./site:/srv
+    restart: unless-stopped
 
   trojan:
     image: teddysun/trojan-go:latest
@@ -89,8 +90,9 @@ services:
       - traefik.tcp.routers.tgo.tls.certresolver=le
       - traefik.tcp.services.tgo.loadbalancer.server.port=443
     volumes:
-      - ~/trojan-go.json:/etc/trojan-go/config.json
-      - ~/letsencrypt:/etc/data
+      - ./trojan-go.json:/etc/trojan-go/config.json
+      - ./letsencrypt:/etc/data
+    restart: unless-stopped
 
   speedtest:
     image: teddysun/trojan:1.16.0
@@ -106,8 +108,9 @@ services:
       - traefik.tcp.routers.spd.tls.passthrough=true
       - traefik.tcp.services.spd.loadbalancer.server.port=443
     volumes:
-      - ~/trojan.json:/etc/trojan/config.json
-      - ~/letsencrypt:/etc/data
+      - ./trojan.json:/etc/trojan/config.json
+      - ./letsencrypt:/etc/data
+    restart: unless-stopped
 
 networks:
   web:
