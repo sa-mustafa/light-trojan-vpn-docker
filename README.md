@@ -39,6 +39,28 @@ Follow through these steps to have a working VPN with trojan, v2ray and xray at 
 
 Trojan requires two things, one is the domain name that is configured previously in docker-compose.yml in two locations (one in labels and the other in volumes section). The other is the trojan password that you choose for yourself and set it in trojan.json in "PASSWORD HERE".
 
+### XRay Configuration
+
+XRay configuration is a bit different. UUID is generated just the following command and replaced over "UUID HERE" in xray.json:
+
+```shell
+docker run -it teddysun/xray:1.8.3 /usr/bin/xray uuid -i SECRET
+```
+
+Where SECRET is a chosen random number.  To generate short ID (for "SHORT ID HERE" in json file), use OpenSSL as follows:
+
+```shell
+openssl rand -hex 8
+```
+
+To create a public/private key pair run the following command:
+
+```shell
+docker run -it teddysun/xray:1.8.3 /usr/bin/xray x25519
+```
+
+Save both keys for reference, public key is used in the xray client, and private key is overwritten on "PRIVATE KEY HERE" in the xray.json file.
+
 ## Running the Script
 
 To run the script, set an email for Let's Encrypt in the environment variables:

@@ -1,0 +1,213 @@
+{
+  "log": {
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    // VLESS-VISION-REALITY
+    {
+      "listen": "0.0.0.0",
+      "port": 8080,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "UUID1 HERE",
+            "flow": "xtls-rprx-vision"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "dest": "soft98.ir:443",
+          "serverNames": [
+            "www.soft98.ir",
+            "soft98.ir"
+          ],
+          "privateKey": "PRIVATE KEY1 HERE",
+          "shortIds": [
+            "SHORT ID HERE",
+            "SHORT ID HERE"
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    // VLESS-xHTTP-REALITY
+    {
+      "listen": "0.0.0.0",
+      "port": 8880,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "UUID2 HERE"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "mode": "auto"
+        },
+        "security": "reality",
+        "realitySettings": {
+          "dest": "www.varzesh3.com:443",
+          "serverNames": [
+            "www.varzesh3.com",
+            "varzesh3.com"
+          ],
+          "privateKey": "PRIVATE KEY2 HERE",
+          "shortIds": [
+            "SHORT ID HERE",
+            "SHORT ID HERE"
+          ]
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    },
+    // VLESS-xHTTP-TLS
+    {
+      "listen": "0.0.0.0",
+      "port": 8443,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "UUID3 HERE"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "security": "tls",
+        "tlsSettings": {
+          "serverName": "aparat.com",
+          "allowInsecure": true,
+          "alpn": [ "h2" ],
+          "certificates": [
+            {
+              "certificateFile": "/etc/data/cert.pem",
+              "keyFile": "/etc/data/key.pem"
+            }
+          ],
+          "fingerprint": "randomized",
+          "minVersion": "1.2",
+          "cipherSuites": "TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256:TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384:TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256:TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256"
+        },
+        "xhttpSettings": {
+          "host": "aparat.com",
+          "mode": "packet-up",
+          "path": "/",
+          "xPaddingBytes": "100-1000",
+          "scMaxEachPostBytes": "1000000",
+          "scMinPostsIntervalMs": "30",
+          "xmux": {
+            "maxConcurrency": "4-8",
+            "maxConnections": 0,
+            "cMaxReuseTimes": 0,
+            "hMaxRequestTimes": "600-900",
+            "hMaxReusableSecs": "1800-3000",
+            "hKeepAlivePeriod": 10
+          },
+          "extra": {
+            "headers": {
+              "User-Agent": "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.7103.126 Mobile Safari/537.36"
+            },
+            "xPaddingBytes": "100-1000",
+            "noSSEHeader": false,
+            "scMaxEachPostBytes": 1000000,
+            "scMaxBufferedPosts": 30,
+            "scStreamUpServerSecs": "20-80"
+          }
+        }
+      }
+    },
+    // VLESS-xHTTP-REALITY-FALLBACK
+    {
+      "listen": "0.0.0.0",
+      "port": 2052,
+      "protocol": "vless",
+      "settings": {
+        "fallbacks": [
+          {
+            "dest": "@xhttp"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "reality",
+        "realitySettings": {
+          "target": "nginx:8000",
+          "xver": 1,
+          "serverNames": [
+            "aparat.com",
+            "upload.aparat.com"
+          ],
+          "privateKey": "PRIVATE KEY3 HERE",
+          "shortIds": [
+            "SHORT ID HERE",
+            "SHORT ID HERE"
+          ]
+        }
+      }
+    },
+    // VLESS-FALLBACK
+    {
+      "listen": "@xhttp",
+      "protocol": "vless",
+      "settings": {
+        "decryption": "none",
+        "clients": [
+          {
+            "id": "UUID4 HERE"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "xhttp",
+        "xhttpSettings": {
+          "path": "/v"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": [
+          "http",
+          "tls",
+          "quic"
+        ]
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "block"
+    }
+  ]
+}
