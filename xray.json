@@ -3,6 +3,23 @@
     "loglevel": "warning"
   },
   "inbounds": [
+    // VLESS
+    {
+      "port": 2083,
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "UUID HERE"
+          }
+        ],
+        "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "tcp",
+        "security": "none"
+      }
+    },
     // VLESS-VISION-REALITY
     {
       "listen": "0.0.0.0",
