@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   traefik:
-    image: traefik:v2.10.4
+    image: traefik:v2.11.44
     ports:
       - target: 80
         published: 80
@@ -70,13 +70,14 @@ services:
       - traefik.http.routers.cad.rule=Host(`api.bps.co.ir`)
       - traefik.http.routers.cad.tls=true
       - traefik.http.routers.cad.tls.certresolver=le
+      - traefik.http.routers.cad.service=cad
       - traefik.http.services.cad.loadbalancer.server.port=80
     volumes:
       - ./site:/srv
     restart: unless-stopped
 
   trojan:
-    image: teddysun/trojan-go:latest
+    image: teddysun/trojan-go:0.10.6
     networks: [web]
     depends_on:
       caddy:
