@@ -115,7 +115,7 @@ services:
 
   xray:
     image: teddysun/xray:25.6.8
-    ports: ["8080:8080", "8880:8880", "2052:2052", "8443:8443"]
+    ports: ["2083:2083", "8080:8080", "8880:8880", "2052:2052", "8443:8443"]
     networks: [web]
     depends_on:
       caddy:
