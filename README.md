@@ -61,12 +61,23 @@ docker run -it teddysun/xray:1.8.3 /usr/bin/xray x25519
 
 Save both keys for reference, public key is used in the xray client, and private key is overwritten on "PRIVATE KEY HERE" in the xray.json file.
 
+### Telegram proxy secret generation
+
+Run this command to create a secret for given domain:
+
+```shell
+docker run --rm nineseconds/mtg:2 generate-secret --hex my.domain.com
+```
+
+Your telegram proxy is ready at 'echo "tg://proxy?server=$(curl -4 -s ifconfig.me)&port=2083&secret=eeTELEGRAM_SECRE"'
+
 ## Running the Script
 
 To run the script, set an email for Let's Encrypt in the environment variables:
 
 ```shell
 export ACME_EMAIL=help@domain.com
+export MTG_SECRET=eeTELEGRAM_SECRET
 ```
 
 and run the script as follows:
