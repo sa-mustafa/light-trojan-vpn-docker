@@ -3,23 +3,6 @@
     "loglevel": "warning"
   },
   "inbounds": [
-    // VLESS
-    {
-      "port": 2083,
-      "protocol": "vless",
-      "settings": {
-        "clients": [
-          {
-            "id": "UUID HERE"
-          }
-        ],
-        "decryption": "none"
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "none"
-      }
-    },
     // VLESS-VISION-REALITY
     {
       "listen": "0.0.0.0",
@@ -28,7 +11,7 @@
       "settings": {
         "clients": [
           {
-            "id": "UUID1 HERE",
+            "id": "UUID HERE",
             "flow": "xtls-rprx-vision"
           }
         ],
@@ -43,7 +26,7 @@
             "www.soft98.ir",
             "soft98.ir"
           ],
-          "privateKey": "PRIVATE KEY1 HERE",
+          "privateKey": "PRIVATE KEY HERE",
           "shortIds": [
             "SHORT ID HERE",
             "SHORT ID HERE"
@@ -67,7 +50,7 @@
       "settings": {
         "clients": [
           {
-            "id": "UUID2 HERE"
+            "id": "UUID HERE"
           }
         ],
         "decryption": "none"
@@ -84,9 +67,8 @@
             "www.varzesh3.com",
             "varzesh3.com"
           ],
-          "privateKey": "PRIVATE KEY2 HERE",
+          "privateKey": "PRIVATE KEY HERE",
           "shortIds": [
-            "SHORT ID HERE",
             "SHORT ID HERE"
           ]
         }
@@ -108,7 +90,7 @@
       "settings": {
         "clients": [
           {
-            "id": "UUID3 HERE"
+            "id": "UUID HERE"
           }
         ],
         "decryption": "none"
@@ -118,8 +100,7 @@
         "security": "tls",
         "tlsSettings": {
           "serverName": "aparat.com",
-          "allowInsecure": true,
-          "alpn": [ "h2" ],
+          "alpn": ["h2"],
           "certificates": [
             {
               "certificateFile": "/etc/data/cert.pem",
@@ -156,64 +137,10 @@
             "scStreamUpServerSecs": "20-80"
           }
         }
-      }
-    },
-    // VLESS-xHTTP-REALITY-FALLBACK
-    {
-      "listen": "0.0.0.0",
-      "port": 2052,
-      "protocol": "vless",
-      "settings": {
-        "fallbacks": [
-          {
-            "dest": "@xhttp"
-          }
-        ],
-        "decryption": "none"
-      },
-      "streamSettings": {
-        "network": "tcp",
-        "security": "reality",
-        "realitySettings": {
-          "target": "nginx:8000",
-          "xver": 1,
-          "serverNames": [
-            "aparat.com",
-            "upload.aparat.com"
-          ],
-          "privateKey": "PRIVATE KEY3 HERE",
-          "shortIds": [
-            "SHORT ID HERE",
-            "SHORT ID HERE"
-          ]
-        }
-      }
-    },
-    // VLESS-FALLBACK
-    {
-      "listen": "@xhttp",
-      "protocol": "vless",
-      "settings": {
-        "decryption": "none",
-        "clients": [
-          {
-            "id": "UUID4 HERE"
-          }
-        ]
-      },
-      "streamSettings": {
-        "network": "xhttp",
-        "xhttpSettings": {
-          "path": "/v"
-        }
       },
       "sniffing": {
         "enabled": true,
-        "destOverride": [
-          "http",
-          "tls",
-          "quic"
-        ]
+        "destOverride": ["http", "tls", "quic"]
       }
     }
   ],

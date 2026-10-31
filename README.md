@@ -69,7 +69,7 @@ Run this command to create a secret for given domain:
 docker run --rm nineseconds/mtg:2 generate-secret --hex my.domain.com
 ```
 
-Your telegram proxy is ready at 'echo "tg://proxy?server=$(curl -4 -s ifconfig.me)&port=2083&secret=eeTELEGRAM_SECRE"'
+Your telegram proxy is ready at 'echo "tg://proxy?server=$(curl -4 -s ifconfig.me)&port=2083&secret=eeTELEGRAM_SECRET"'
 
 ## Running the Script
 
@@ -80,7 +80,7 @@ export ACME_EMAIL=help@domain.com
 export MTG_SECRET=eeTELEGRAM_SECRET
 ```
 
-and run the script as follows:
+and run the docker script as follows:
 
 ```shell
 docker compose up -d
